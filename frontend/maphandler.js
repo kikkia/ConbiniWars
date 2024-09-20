@@ -199,7 +199,7 @@ const githubButton = L.Control.extend({
         const link = L.DomUtil.create('button', 'github-button');
         link.innerHTML = '<i class="fa fa-github" style="font-size:48px;color:black"></i>';
         link.onclick = function () {
-            window.open("https://github.com", '_blank').focus()
+            window.open("https://github.com/kikkia/ConbiniWars", '_blank').focus()
         };
         return link;
     }
