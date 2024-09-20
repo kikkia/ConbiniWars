@@ -16,15 +16,15 @@ base.addTo(map);
 const paddedRenderer = L.svg({ padding: 10 });
 const regionalLayers = [];
 const regionalConbinis = [];
-let nihonLayer, regionalLayerGroup, regionalConbiniGroup;
-loadGeoJSONPath('assets/japan.geojson');
+let nihonLayer, regionalLayerGroup, conbiniLayer;
+loadGeoJSON();
 
 const helloDialog =  L.control.window(map,{title:'Conbini Wars', content: welcomeContent}).show()
 
-async function loadGeoJSONPath(endpoint) {
+async function loadGeoJSON() {
     try {
-        const response = await fetch(endpoint);
-        const data = await response.json();
+        let response = await fetch('assets/japan.geojson');
+        let data = await response.json();
         nihonLayer = L.geoJSON(data, {
             style: setRegionStyle,
             onEachFeature: function (feature, layer) {
@@ -51,27 +51,24 @@ async function loadGeoJSONPath(endpoint) {
                 .catch(error => {
                     console.error('Error loading point data:', error);
                 });
-
-            fetch(`assets/dumps_limited_points/${regionLayer.regionId}_points.geojson`)
-                .then(response => response.json())
-                .then(data => {
-                    let pointsJson = L.geoJSON(data,
-                    {
-                        style: setLocalStyle,
-                        onEachFeature: setCellProps,
-                    })
-                    regionLayer.pointsLayer = donutCluster()
-                    regionLayer.pointsLayer.addLayer(pointsJson)
-                    regionalConbinis.push(regionLayer.pointsLayer);
-                    if (regionalConbinis.length == Object.keys(nihonLayer._layers).length) {
-                        populateControls()
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading point data:', error);
-                });
-
         });
+        
+        response = await fetch('assets/all_points.geojson')
+            .then(response => response.json())
+            .then(data => {
+                let pointsJson = L.geoJSON(data,
+                {
+                    style: setLocalStyle,
+                    onEachFeature: setCellProps,
+                })
+                conbiniLayer = donutCluster()
+                conbiniLayer.addLayer(pointsJson)
+                populateControls()
+            })
+            .catch(error => {
+                console.error('Error loading point data:', error);
+            });
+
 
         // Update point layer visibility on map move
         map.on('moveend', function () {
@@ -182,15 +179,15 @@ const legend = L.control.Legend({
 }).addTo(map);
 
 function populateControls() {
-    regionalLayerGroup = L.layerGroup(regionalLayers)
-    regionalConbiniGroup =  L.layerGroup(regionalConbinis)
+    regionalLayerGroup = L.layerGroup(regionalLayers);
     L.control.layers(null, 
         {
             "Show Prefecture": nihonLayer, 
             "Force All Local":  regionalLayerGroup, 
-            "Show Conbinis": regionalConbiniGroup
+            "Show Conbinis": conbiniLayer
         }
     ).addTo(map);
+    conbiniLayer.addTo(map);
 }
 // GitHub button
 const githubButton = L.Control.extend({
@@ -229,11 +226,11 @@ map.addControl(new githubButton());
 map.addControl(new infoButton());
 
 function forceAllRegionsEnabled() {
-    return regionalLayerGroup && regionalLayerGroup._map
+    return regionalLayerGroup && regionalLayerGroup._map;
 }
 
 function forceAllConbinisEnabled() {
-    return regionalConbiniGroup && regionalConbiniGroup._map
+    return regionalConbiniGroup && regionalConbiniGroup._map;
 }
 
 function donutCluster() {
@@ -272,5 +269,5 @@ function donutCluster() {
             // Possible types are `count`, `percentage` or `value` and can help to use different formattings
             format: (value, type) => value.toFixed(0),
         }
-    )
+    );
 }
