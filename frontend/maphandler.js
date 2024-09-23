@@ -1,5 +1,4 @@
 const map = L.map('map', {preferCanvas: true}).setView([35.652832, 139.700745], 6);
-
 const welcomeContent = `<p>In my neighborhood there is seemingly only Lawson conbinis. This lead me to take a look at how common 
     these pockets of exclusive territory are. This is a pretty surface level analysis of all locations of conbini in Japan. 
     (Only the top few brands)</p></br><h2>How it works</h2><p>If you zoom in on a prefecture, the map will switch over to a more detailed
@@ -144,7 +143,7 @@ const legend = L.control.Legend({
     collapsed: false,
     symbolWidth: 24,
     opacity: 1,
-    column: 2,
+    column: 1,
     legends: [{
         label: "7-Eleven",
         type: "rectangle",
