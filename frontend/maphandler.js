@@ -1,5 +1,5 @@
 const map = L.map('map', {preferCanvas: true}).setView([35.652832, 139.700745], 6);
-const welcomeContent = `<p>In my neighborhood there is seemingly only Lawson conbinis. This lead me to take a look at how common 
+const welcomeContent = `<p>In my neighborhood there is seemingly only Lawson conbinis. This led me to take a look at how common 
     these pockets of exclusive territory are. This is a pretty surface level analysis of all locations of conbini in Japan. 
     (Only the top few brands)</p></br><h2>How it works</h2><p>If you zoom in on a prefecture, the map will switch over to a more detailed
     map. The detailed map shows territory based on what the closest conbini brand is for a given place.</p><p>
